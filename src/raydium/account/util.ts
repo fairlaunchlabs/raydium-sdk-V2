@@ -60,7 +60,10 @@ export function generatePubKey({
   programId: PublicKey;
   assignSeed?: string;
 }): { publicKey: PublicKey; seed: string } {
-  const seed = assignSeed ? btoa(assignSeed).slice(0, 32) : Keypair.generate().publicKey.toBase58().slice(0, 32);
+  // const seed = assignSeed ? btoa(assignSeed).slice(0, 32) : Keypair.generate().publicKey.toBase58().slice(0, 32);
+  const seed = assignSeed
+    ? Buffer.from(sha256(Buffer.from(assignSeed))).toString("base64").slice(0, 32)
+    : Keypair.generate().publicKey.toBase58().slice(0, 32);
   const publicKey = createWithSeed(fromPublicKey, seed, programId);
   return { publicKey, seed };
 }
